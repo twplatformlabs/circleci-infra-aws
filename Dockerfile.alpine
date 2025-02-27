@@ -1,10 +1,10 @@
-FROM twdps/circleci-base-image:alpine-8.5.0
+FROM twdps/circleci-base-image:alpine-8.6.0
 
 LABEL org.opencontainers.image.created="%%CREATED%%" \
       org.opencontainers.image.authors="nic.cheneweth@thoughtworks.com" \
-      org.opencontainers.image.documentation="https://github.com/ThoughtWorks-DPS/circleci-infra-aws" \
-      org.opencontainers.image.source="https://github.com/ThoughtWorks-DPS/circleci-infra-aws" \
-      org.opencontainers.image.url="https://github.com/ThoughtWorks-DPS/circleci-infra-aws" \
+      org.opencontainers.image.documentation="https://github.com/twplatformlabs/circleci-infra-aws" \
+      org.opencontainers.image.source="https://github.com/twplatformlabs/circleci-infra-aws" \
+      org.opencontainers.image.url="https://github.com/twplatformlabs/circleci-infra-aws" \
       org.opencontainers.image.version="%%VERSION%%" \
       org.opencontainers.image.vendor="ThoughtWorks, Inc." \
       org.opencontainers.image.licenses="MIT" \
@@ -15,16 +15,16 @@ LABEL org.opencontainers.image.created="%%CREATED%%" \
 ENV TERRAFORM_VERSION=1.9.8
 ENV TERRAFORM_SHA256SUM=186e0145f5e5f2eb97cbd785bc78f21bae4ef15119349f6ad4fa535b83b10df8
 ENV TFLINT_VERSION=0.55.1
-ENV TRIVY_VERSION=0.59.0
+ENV TRIVY_VERSION=0.59.1
 ENV AWSCLI_VERSION=1.36.17
-ENV CHECKOV_VERSION=3.2.360
+ENV CHECKOV_VERSION=3.2.378
 ENV TERRASCAN_VERSION=1.19.9
-ENV SNYK_VERSION=1.1295.2
+ENV SNYK_VERSION=1.1295.4
 ENV BATS_VERSION=1.11.1
-ENV KUBECTL_VERSION=1.32.1
-ENV HELM_VERSION=3.17.0
+ENV KUBECTL_VERSION=1.32.2
+ENV HELM_VERSION=3.17.1
 ENV CIRCLEPIPE_VERSION=0.3.2
-ENV COSIGN_VERSION=2.4.1
+ENV COSIGN_VERSION=2.4.3
 
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 
@@ -38,18 +38,18 @@ RUN sudo apk add --no-cache \
              ruby-webrick==1.8.1-r1 \
              ruby-bundler==2.5.23-r0 \
              ncurses-terminfo-base==6.5_p20241006-r3 \
-             python3==3.12.8-r1 \
-             python3-dev==3.12.8-r1 \
+             python3==3.12.9-r0 \
+             python3-dev==3.12.9-r0 \
              perl-utils==5.40.1-r0 \
              libffi-dev==3.4.6-r0 && \
     sudo rm /usr/lib/python3.12/EXTERNALLY-MANAGED && \
     sudo python3 -m ensurepip && \
     sudo rm -r /usr/lib/python*/ensurepip && \
-    sudo pip3 install --upgrade pip==25.0 && \
+    sudo pip3 install --upgrade pip==25.0.1 && \
     if [ ! -e /usr/bin/pip ]; then sudo ln -s /usr/bin/pip3 /usr/bin/pip ; fi && \
     sudo ln -s /usr/bin/pydoc3 /usr/bin/pydoc && \
     sudo pip install --no-binary \
-             setuptools==75.8.0 \
+             setuptools==75.8.2 \
              wheel==0.45.1 \
              invoke==2.2.0 \
              requests==2.32.3 \
@@ -64,8 +64,8 @@ RUN sudo apk add --no-cache \
     sudo sh -c "echo 'gem: --no-document' > /etc/gemrc" && \
     sudo gem install \
              awspec:1.32.0 \
-             nokogiri:1.18.2 \
-             json:2.9.1 && \
+             nokogiri:1.18.3 \
+             json:2.10.1 && \
     curl -SLO "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && \
     echo "${TERRAFORM_SHA256SUM}  terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > "terraform_${TERRAFORM_VERSION}_SHA256SUMS" && \
     sha256sum -cs "terraform_${TERRAFORM_VERSION}_SHA256SUMS" && sudo rm "terraform_${TERRAFORM_VERSION}_SHA256SUMS" && \
@@ -88,7 +88,7 @@ RUN sudo apk add --no-cache \
     sudo mv linux-amd64/helm /usr/local/bin && \
     sudo rm -rf linux-amd64/ && \
     sudo rm "helm-v${HELM_VERSION}-linux-amd64.tar.gz" && \
-    curl -SLO "https://github.com/ThoughtWorks-DPS/circlepipe/releases/download/${CIRCLEPIPE_VERSION}/circlepipe_Linux_amd64.tar.gz" && \
+    curl -SLO "https://github.com/twplatformlabs/circlepipe/releases/download/${CIRCLEPIPE_VERSION}/circlepipe_Linux_amd64.tar.gz" && \
     mkdir ./circlepipe && tar -xzf circlepipe_Linux_amd64.tar.gz -C ./circlepipe && \
     sudo mv ./circlepipe/circlepipe /usr/local/bin/circlepipe && \
     sudo rm -rf ./circlepipe circlepipe_Linux_amd64.tar.gz && \
