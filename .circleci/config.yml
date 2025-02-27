@@ -7,7 +7,7 @@ orbs:
   do: twdps/pipeline-events@5.0.1
 
 globals:
-  - &context empc-lab
+  - &context platform
   - &shell op run --env-file op.env -- /bin/bash -eo pipefail
 
 on-each-run: &on-each-run
@@ -29,10 +29,10 @@ commands:
     steps:
       - op/env
       - op/write-to-file:
-          op-value: empc-lab/svc-cosign-private-key/notesPlain
+          op-value: platform/svc-cosign-private-key/notesPlain
           out-file: cosign.key
       - op/write-to-file:
-          op-value: empc-lab/svc-cosign-public-key/notesPlain
+          op-value: platform/svc-cosign-public-key/notesPlain
           out-file: cosign.pub
 
 workflows:
@@ -49,7 +49,7 @@ workflows:
           snyk-scan: true
           snyk-severity-threshold: high
           snyk-skip-base-image: true
-          snyk-organization: twdps
+          snyk-organization: twplatformlabs
           bats-test: true
           bats-run-container-name: circleci-infra-aws-alpine-edge
           bats-entry-point: /bin/ash
@@ -70,7 +70,7 @@ workflows:
           snyk-scan: true
           snyk-severity-threshold: high
           snyk-skip-base-image: true
-          snyk-organization: twdps
+          snyk-organization: twplatformlabs
           bats-test: true
           bats-run-container-name: circleci-infra-aws-ubuntu-edge
           bats-entry-point: /bin/bash
