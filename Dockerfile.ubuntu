@@ -1,4 +1,4 @@
-FROM twdps/circleci-base-image:ubuntu-8.6.0
+FROM twdps/circleci-base-image:ubuntu-8.8.0
 
 LABEL org.opencontainers.image.created="%%CREATED%%" \
       org.opencontainers.image.authors="nic.cheneweth@thoughtworks.com" \
@@ -14,7 +14,7 @@ LABEL org.opencontainers.image.created="%%CREATED%%" \
 
 ENV TERRAFORM_VERSION=1.9.8
 ENV TERRAFORM_SHA256SUM=186e0145f5e5f2eb97cbd785bc78f21bae4ef15119349f6ad4fa535b83b10df8
-ENV TFLINT_VERSION=0.55.1
+ENV TFLINT_VERSION=0.56.0
 ENV TRIVY_VERSION=0.59.1
 ENV AWSCLI_VERSION=1.36.17
 ENV CHECKOV_VERSION=3.2.378

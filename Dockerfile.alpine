@@ -1,4 +1,4 @@
-FROM twdps/circleci-base-image:alpine-8.6.0
+FROM twdps/circleci-base-image:alpine-8.8.0
 
 LABEL org.opencontainers.image.created="%%CREATED%%" \
       org.opencontainers.image.authors="nic.cheneweth@thoughtworks.com" \
@@ -15,14 +15,14 @@ LABEL org.opencontainers.image.created="%%CREATED%%" \
 ENV TERRAFORM_VERSION=1.9.8
 ENV TERRAFORM_SHA256SUM=186e0145f5e5f2eb97cbd785bc78f21bae4ef15119349f6ad4fa535b83b10df8
 ENV TFLINT_VERSION=0.55.1
-ENV TRIVY_VERSION=0.59.1
+ENV TRIVY_VERSION=0.61.0
 ENV AWSCLI_VERSION=1.36.17
 ENV CHECKOV_VERSION=3.2.378
 ENV TERRASCAN_VERSION=1.19.9
-ENV SNYK_VERSION=1.1295.4
+ENV SNYK_VERSION=1.1296.1
 ENV BATS_VERSION=1.11.1
-ENV KUBECTL_VERSION=1.32.2
-ENV HELM_VERSION=3.17.1
+ENV KUBECTL_VERSION=1.32.3
+ENV HELM_VERSION=3.17.2
 ENV CIRCLEPIPE_VERSION=0.3.2
 ENV COSIGN_VERSION=2.4.3
 
@@ -41,7 +41,7 @@ RUN sudo apk add --no-cache \
              python3==3.12.9-r0 \
              python3-dev==3.12.9-r0 \
              perl-utils==5.40.1-r0 \
-             libffi-dev==3.4.6-r0 && \
+             libffi-dev==3.4.7-r0 && \
     sudo rm /usr/lib/python3.12/EXTERNALLY-MANAGED && \
     sudo python3 -m ensurepip && \
     sudo rm -r /usr/lib/python*/ensurepip && \
@@ -49,11 +49,11 @@ RUN sudo apk add --no-cache \
     if [ ! -e /usr/bin/pip ]; then sudo ln -s /usr/bin/pip3 /usr/bin/pip ; fi && \
     sudo ln -s /usr/bin/pydoc3 /usr/bin/pydoc && \
     sudo pip install --no-binary \
-             setuptools==75.8.2 \
+             setuptools==78.1.0 \
              wheel==0.45.1 \
              invoke==2.2.0 \
              requests==2.32.3 \
-             jinja2==3.1.5 \
+             jinja2==3.1.6 \
              iam-credential-rotation==0.2.2 \
              checkov=="${CHECKOV_VERSION}" \
              awscli=="${AWSCLI_VERSION}" && \
@@ -64,8 +64,8 @@ RUN sudo apk add --no-cache \
     sudo sh -c "echo 'gem: --no-document' > /etc/gemrc" && \
     sudo gem install \
              awspec:1.32.0 \
-             nokogiri:1.18.3 \
-             json:2.10.1 && \
+             nokogiri:1.18.7 \
+             json:2.10.2 && \
     curl -SLO "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && \
     echo "${TERRAFORM_SHA256SUM}  terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > "terraform_${TERRAFORM_VERSION}_SHA256SUMS" && \
     sha256sum -cs "terraform_${TERRAFORM_VERSION}_SHA256SUMS" && sudo rm "terraform_${TERRAFORM_VERSION}_SHA256SUMS" && \

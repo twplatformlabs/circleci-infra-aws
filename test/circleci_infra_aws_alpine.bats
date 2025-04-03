@@ -7,7 +7,7 @@
 
 @test "tflint version" {
   run bash -c "docker exec circleci-infra-aws-alpine-edge tflint --version"
-  [[ "${output}" =~ "0.55" ]]
+  [[ "${output}" =~ "0.56" ]]
 }
 
 @test "python3 version" {
@@ -37,7 +37,7 @@
 
 @test "trivy version" {
   run bash -c "docker exec circleci-infra-aws-alpine-edge trivy --version"
-  [[ "${output}" =~ "0.59" ]]
+  [[ "${output}" =~ "0.61" ]]
 }
 
 @test "checkov version" {
@@ -52,7 +52,7 @@
 
 @test "snyk version" {
   run bash -c "docker exec circleci-infra-aws-alpine-edge snyk version"
-  [[ "${output}" =~ "1.1295" ]]
+  [[ "${output}" =~ "1.1296" ]]
 }
 
 @test "circlepipe version" {
