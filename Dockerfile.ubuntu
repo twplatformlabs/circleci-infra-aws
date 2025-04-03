@@ -15,13 +15,13 @@ LABEL org.opencontainers.image.created="%%CREATED%%" \
 ENV TERRAFORM_VERSION=1.9.8
 ENV TERRAFORM_SHA256SUM=186e0145f5e5f2eb97cbd785bc78f21bae4ef15119349f6ad4fa535b83b10df8
 ENV TFLINT_VERSION=0.56.0
-ENV TRIVY_VERSION=0.59.1
+ENV TRIVY_VERSION=0.61.0
 ENV AWSCLI_VERSION=1.36.17
 ENV CHECKOV_VERSION=3.2.378
 ENV TERRASCAN_VERSION=1.19.9
-ENV SNYK_VERSION=1.1295.4
+ENV SNYK_VERSION=1.1296.1
 ENV BATS_VERSION=1.11.1
-ENV KUBECTL_VERSION=1.32.2
+ENV KUBECTL_VERSION=1.32.3
 ENV HELM_VERSION=3.17.1
 ENV CIRCLEPIPE_VERSION=0.3.2
 ENV COSIGN_VERSION=2.4.3
@@ -44,14 +44,14 @@ RUN sudo apt-get update && sudo apt-get install --no-install-recommends -y \
     sudo pip install --no-cache-dir --break-system-packages --ignore-installed \
              invoke==2.2.0 \
              requests==2.32.3 \
-             jinja2==3.1.5 \
+             jinja2==3.1.6 \
              iam-credential-rotation==0.2.2 \
              awscli=="${AWSCLI_VERSION}" \
              checkov=="${CHECKOV_VERSION}" && \
     sudo gem install --no-document \
              awspec:1.32.0 \
-             nokogiri:1.18.3 \
-             json:2.10.1 && \
+             nokogiri:1.18.7 \
+             json:2.10.2 && \
     sudo npm install -g \
              snyk@${SNYK_VERSION} \
              github-release-notes@0.17.3 \
