@@ -1,4 +1,4 @@
-FROM twdps/circleci-base-image:ubuntu-8.8.0
+FROM twdps/circleci-base-image:ubuntu-stable
 
 LABEL org.opencontainers.image.created="%%CREATED%%" \
       org.opencontainers.image.authors="nic.cheneweth@thoughtworks.com" \
@@ -12,77 +12,61 @@ LABEL org.opencontainers.image.created="%%CREATED%%" \
       org.opencontainers.image.description="Ubuntu-based CircleCI executor image for terraform pipelines" \
       org.opencontainers.image.base.name="%%BASE%%"
 
+# terraform is pinned pending a resolution of the state file lock issues created by 1.10
 ENV TERRAFORM_VERSION=1.9.8
 ENV TERRAFORM_SHA256SUM=186e0145f5e5f2eb97cbd785bc78f21bae4ef15119349f6ad4fa535b83b10df8
-ENV TFLINT_VERSION=0.56.0
-ENV TRIVY_VERSION=0.61.0
+
+# awscli has to be pinned because the checkov package does not support more recent versions
 ENV AWSCLI_VERSION=1.36.17
-ENV CHECKOV_VERSION=3.2.378
-ENV TERRASCAN_VERSION=1.19.9
-ENV SNYK_VERSION=1.1296.1
-ENV BATS_VERSION=1.11.1
-ENV KUBECTL_VERSION=1.32.3
-ENV HELM_VERSION=3.17.1
-ENV CIRCLEPIPE_VERSION=0.3.2
-ENV COSIGN_VERSION=2.4.3
 
 SHELL ["/bin/bash", "-exo", "pipefail", "-c"]
 
 # sudo since twdps circleci base images set the USER=cirlceci
 # hadolint ignore=DL3004
 RUN sudo apt-get update && sudo apt-get install --no-install-recommends -y \
-                 nodejs=20.16.0+dfsg-1ubuntu1 \
-                 npm=9.2.0~ds1-3 \
-                 ruby-full=1:3.3~ubuntu3 \
-                 python3-dev=3.12.6-0ubuntu1 \
+                 nodejs \
+                 npm \
+                 ruby-full \
+                 python3-dev \
                  python3-pip \
-                 python3-venv=3.12.6-0ubuntu1 && \
+                 python3-venv && \
     sudo ln -f -s /usr/bin/pip3 /usr/bin/pip && \
     sudo ln -f -s /usr/bin/pydoc3 /usr/bin/pydoc && \
     sudo ln -f -s /usr/bin/python3 /usr/bin/python && \
     sudo ln -f -s /usr/bin/python3-config /usr/bin/python-config && \
     sudo pip install --no-cache-dir --break-system-packages --ignore-installed \
-             invoke==2.2.0 \
-             requests==2.32.3 \
-             jinja2==3.1.6 \
-             iam-credential-rotation==0.2.2 \
+             invoke \
+             requests \
+             jinja2 \
+             iam-credential-rotation \
              awscli=="${AWSCLI_VERSION}" \
-             checkov=="${CHECKOV_VERSION}" && \
+             checkov && \
     sudo gem install --no-document \
-             awspec:1.32.0 \
-             nokogiri:1.18.7 \
-             json:2.10.2 && \
+             awspec \
+             nokogiri \
+             json && \
     sudo npm install -g \
-             snyk@${SNYK_VERSION} \
-             github-release-notes@0.17.3 \
-             bats@${BATS_VERSION} && \
+             snyk \
+             bats && \
     curl -SLO "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && \
     echo "${TERRAFORM_SHA256SUM}  terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > "terraform_${TERRAFORM_VERSION}_SHA256SUMS" && \
     sha256sum -c "terraform_${TERRAFORM_VERSION}_SHA256SUMS" && sudo rm "terraform_${TERRAFORM_VERSION}_SHA256SUMS" && \
     sudo unzip "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && sudo mv terraform /usr/local/bin/terraform && \
     sudo rm "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && rm LICENSE.txt && \
-    curl -SLO "https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_linux_amd64.zip" > tflint_linux_amd64.zip && \
-    sudo unzip tflint_linux_amd64.zip -d /usr/local/bin && \
-    sudo rm tflint_linux_amd64.zip && \
-    curl -LO "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz" && \
-    tar xzf "trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz" trivy && \
-    sudo mv trivy /usr/local/bin && rm "trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz" && \
-    curl -SLO "https://github.com/tenable/terrascan/releases/download/v${TERRASCAN_VERSION}/terrascan_${TERRASCAN_VERSION}_Linux_x86_64.tar.gz" && \
-    sudo tar -xf "terrascan_${TERRASCAN_VERSION}_Linux_x86_64.tar.gz" terrascan && \
-    sudo mv terrascan /usr/local/bin/terrascan && sudo rm "terrascan_${TERRASCAN_VERSION}_Linux_x86_64.tar.gz" && \
-    curl -SLO "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && \
-    sudo chmod +x ./kubectl  && \
-    sudo mv ./kubectl /usr/local/bin/kubectl && \
-    curl -SLO "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" && \
-    sudo tar -xf "helm-v${HELM_VERSION}-linux-amd64.tar.gz" && \
-    sudo mv linux-amd64/helm /usr/local/bin && \
-    sudo rm -rf linux-amd64/ && \
-    sudo rm "helm-v${HELM_VERSION}-linux-amd64.tar.gz" && \
-    curl -SLO "https://github.com/twplatformlabs/circlepipe/releases/download/${CIRCLEPIPE_VERSION}/circlepipe_Linux_amd64.tar.gz" && \
+    curl -L $(curl -s https://api.github.com/repos/tenable/terrascan/releases/latest | grep -o -E "https://.+?_Darwin_x86_64.tar.gz") > terrascan.tar.gz && \
+    tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz && \
+    sudo install terrascan /usr/local/bin && rm terrascan && \
+    sudo bash -c "curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash" && \
+    curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && \
+    sudo bash -c "curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    sudo bash -c "curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash" && \
+    download_url=$(curl -s "https://api.github.com/repos/twplatformlabs/circlepipe/releases/latest" | jq -r ".assets[] | select(.name == \"circlepipe_Linux_amd64.tar.gz\") | .browser_download_url") && \
+    curl -LO "${download_url}" && \
     mkdir ./circlepipe && tar -xzf circlepipe_Linux_amd64.tar.gz -C ./circlepipe && \
     sudo mv ./circlepipe/circlepipe /usr/local/bin/circlepipe && \
     sudo rm -rf ./circlepipe circlepipe_Linux_amd64.tar.gz && \
-    curl -LO "https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64" && \
+    download_url=$(curl -s "https://api.github.com/repos/sigstore/cosign/releases/latest" | jq -r ".assets[] | select(.name == \"cosign-linux-amd64\") | .browser_download_url") && \
+    curl -LO "${download_url}" && \
     chmod +x cosign-linux-amd64 && sudo mv cosign-linux-amd64 /usr/local/bin/cosign && \
     sudo apt-get clean && \
     sudo rm -rf /var/lib/apt/lists/*

@@ -4,11 +4,17 @@ version: 2.1
 orbs:
   executor-tools: twdps/executor-tools@4.0.1
   op: twdps/onepassword@3.0.0
-  do: twdps/pipeline-events@5.0.1
+  do: twdps/pipeline-events@5.1.0
 
 globals:
   - &context platform
   - &shell op run --env-file op.env -- /bin/bash -eo pipefail
+
+on-push-main: &on-push-main
+  branches:
+    only: /main/
+  tags:
+    ignore: /.*/
 
 on-each-run: &on-each-run
   branches:
@@ -21,7 +27,6 @@ on-tag-main: &on-tag-main
     ignore: /.*/
   tags:
     only: /.*/
-
 
 commands:
 
@@ -51,9 +56,8 @@ workflows:
           snyk-skip-base-image: true
           snyk-organization: twplatformlabs
           bats-test: true
-          bats-run-container-name: circleci-infra-aws-alpine-edge
           bats-entry-point: /bin/ash
-          bats-test-path: test/circleci_infra_aws_alpine.bats
+          bats-test-path: test/circleci_infra_aws.bats
           opencontainer-labels: true
           security-scan-nofail: true
           after-checkout:
@@ -72,9 +76,8 @@ workflows:
           snyk-skip-base-image: true
           snyk-organization: twplatformlabs
           bats-test: true
-          bats-run-container-name: circleci-infra-aws-ubuntu-edge
           bats-entry-point: /bin/bash
-          bats-test-path: test/circleci_infra_aws_ubuntu.bats
+          bats-test-path: test/circleci_infra_aws.bats
           opencontainer-labels: true
           security-scan-nofail: true
           after-checkout:
@@ -141,16 +144,25 @@ workflows:
             - alpine release
             - ubuntu release
 
-  schedule ci build:
+  monthly build:
+    when:
+      equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+    jobs:
+      - do/automated-tag:
+          tag-type: monthly-recurring
+          committer-email: twplatformlabs@gmail.com
+          committer-name: twplatformlabs-sa
+
+  schedule monthly build:
     jobs:
       - do/schedule-pipeline:
-          name: configure weekly trigger
+          name: configure scheduled pipeline run for monthly general release
           shell: *shell
           context: *context
-          scheduled-pipeline-name: weekly-ci-build
+          scheduled-pipeline-name: Monthly update release
           scheduled-pipeline-description: |
-            Automatically trigger image build on a weekly schedule. Failure of
-            this recurring build indicates new releases of dependent packages.
-          hours-of-day: "[1]"
-          days-of-week: "[\"SUN\"]"
-          filters: *on-tag-main
+            Automatically build and release a current version of circleci-infra-aws
+            using the YYYY.MM tag format.
+          hours-of-day: "[11]" # 11 am UTC = 6am Central
+          days-of-month: "[6]" # 6th of each month
+          filters: *on-push-main
