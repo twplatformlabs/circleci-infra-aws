@@ -59,6 +59,7 @@ RUN sudo apt-get update && sudo apt-get install --no-install-recommends -y \
     sudo bash -c "curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash" && \
     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && \
     sudo bash -c "curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && \
     sudo bash -c "curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash" && \
     download_url=$(curl -s "https://api.github.com/repos/twplatformlabs/circlepipe/releases/latest" | jq -r ".assets[] | select(.name == \"circlepipe_Linux_amd64.tar.gz\") | .browser_download_url") && \
     curl -LO "${download_url}" && \

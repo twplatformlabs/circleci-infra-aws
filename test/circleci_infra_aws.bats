@@ -17,7 +17,7 @@
 
 @test "awscli version" {
   run bash -c "docker exec container-test aws help"
-  [[ "${output}" =~ "GLOBAL OPTIONS" ]]
+  [[ "${output}" =~ "aws [options]" ]]
 }
 
 @test "bats version" {
