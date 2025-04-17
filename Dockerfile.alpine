@@ -22,7 +22,7 @@ ENV AWSCLI_VERSION=1.36.17
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 
 # sudo since twdps circleci remote docker images set the USER=cirlceci
-# hadolint ignore=DL3004
+# hadolint ignore=DL3004,SC2046
 RUN sudo apk add --no-cache \
              nodejs-current \
              npm \
