@@ -1,4 +1,4 @@
-#!/usr/bin/env bats
+# #!/usr/bin/env bats
 
 @test "terraform version" {
   run bash -c "docker exec container-test terraform --help"
@@ -68,4 +68,9 @@
 @test "helm version" {
   run bash -c "docker exec container-test helm --help"
   [[ "${output}" =~ "helm [command]" ]]
+}
+
+@test "working directory should not contain files" {
+  ls -A | grep -q '.' && exit 1 || exit 0
+  [ "$status" -eq 0 ]
 }
