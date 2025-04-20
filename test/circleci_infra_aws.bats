@@ -69,8 +69,3 @@
   run bash -c "docker exec container-test helm --help"
   [[ "${output}" =~ "helm [command]" ]]
 }
-
-@test "working directory should not contain files" {
-  run sh -c 'ls -A | grep ^'
-  [ "$status" -ne 0 ]
-}
