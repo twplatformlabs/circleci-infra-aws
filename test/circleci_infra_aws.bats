@@ -71,6 +71,6 @@
 }
 
 @test "working directory should not contain files" {
-  run ls -A
-  [ -z "$output" ]
+  run sh -c 'ls -A | grep ^'
+  [ "$status" -ne 0 ]
 }
