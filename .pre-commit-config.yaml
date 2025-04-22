@@ -28,4 +28,4 @@ repos:
         name: hadolint
         entry: hadolint
         language: system
-        files: ^Dockerfile.alpine, ^Dockerfile.slim
+        files: ^Dockerfile.alpine, ^Dockerfile.ubuntu
