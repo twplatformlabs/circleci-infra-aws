@@ -21,7 +21,8 @@ ENV AWSCLI_VERSION=1.36.17
 
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 
-# sudo since twdps circleci remote docker images set the USER=cirlceci
+# Configured for automatic, monthly build using current package repository release versions.
+# Pin downstream executor builds to specific OS and package versions using YYYY.MM tag.
 # hadolint ignore=DL3004,SC2046
 RUN sudo apk add --no-cache \
              nodejs-current \
@@ -80,3 +81,5 @@ RUN sudo apk add --no-cache \
     chmod +x cosign-linux-amd64 && sudo mv cosign-linux-amd64 /usr/local/bin/cosign
 
 USER circleci
+
+WORKDIR /home/circleci/project

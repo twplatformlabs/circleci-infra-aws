@@ -21,7 +21,8 @@ ENV AWSCLI_VERSION=1.36.17
 
 SHELL ["/bin/bash", "-exo", "pipefail", "-c"]
 
-# sudo since twdps circleci base images set the USER=cirlceci
+# Configured for automatic, monthly build using current package repository release versions.
+# Pin downstream executor builds to specific OS and package versions using YYYY.MM tag.
 # hadolint ignore=DL3004,SC2046
 RUN sudo apt-get update && sudo apt-get install --no-install-recommends -y \
                  nodejs \
@@ -73,3 +74,5 @@ RUN sudo apt-get update && sudo apt-get install --no-install-recommends -y \
     sudo rm -rf /var/lib/apt/lists/*
 
 USER circleci
+
+WORKDIR /home/circleci/project
