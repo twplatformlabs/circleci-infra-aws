@@ -2,7 +2,7 @@
 version: 2.1
 
 orbs:
-  executor-tools: twdps/executor-tools@4.0.1
+  executor-tools: twdps/executor-tools@5.0.0
   op: twdps/onepassword@3.0.0
   do: twdps/pipeline-events@5.1.0
 
