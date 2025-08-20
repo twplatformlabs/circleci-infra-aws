@@ -14,7 +14,7 @@ Primary packages include:
 - terraform, tflint, trivy, terrascan, checkov  
 - python & awscli/boto3  
 - awspec, bats  
-- docker, kubectl, helm, cosign, circlepipe, github-cli  
+- docker, kubectl, helm, cosign, circlepipe 
 
 _Review the build and CVE scan logs in the release artifacts for specific packages versions and known vulnerabilities (if any)._  
 
