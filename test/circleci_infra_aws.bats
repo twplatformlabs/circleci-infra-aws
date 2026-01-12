@@ -31,7 +31,7 @@
 }
 
 @test "awspec version" {
-  run bash -c "docker exec container-test gem list | grep "awspec"
+  run bash -c "docker exec container-test gem list | grep awspec"
   [[ "${output}" =~ "awspec" ]]
 }
 
