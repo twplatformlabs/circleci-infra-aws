@@ -31,8 +31,8 @@
 }
 
 @test "awspec version" {
-  run bash -c "docker exec container-test awspec help"
-  [[ "${output}" =~ "Commands:" ]]
+  run bash -c "docker exec container-test gem list | grep "awspec"
+  [[ "${output}" =~ "awspec" ]]
 }
 
 @test "trivy version" {
