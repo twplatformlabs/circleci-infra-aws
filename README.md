@@ -52,4 +52,14 @@ twdps/circleci-infra-aws:-edge
 
 `edge` - is the latest development of the Base image. Built from the `HEAD` of the `main` branch. Intended to be used as a testing version of the image with the most recent changes.   
 
-_Note. Terraform 1.10 seems to introduce a breaking change when using terraform cloud as `remote` backend. Not certain, but it appears as though Hashi wants app.terraform.io to use the cloud backend directive going foward rather then remote and has made some change based on that assumption that is resulting in recurring errors when attempting to run terraform plan or apply. During the initial fetch-state action it locks the state and then returns an error saying it could not release the lock. It doesn't do this 100% of the time but more often than not. Reverting to 1.9 resolved the problem. The `cloud` backend does not support prefix naming and this results in additional overhead when attempting to maintain DRY tf pipeline patterns. Further investigation is required._
+_Note. Terraform 1.10 seems to introduce a breaking change when using terraform cloud as `remote` backend. Hashi wants app.terraform.io to use the cloud backend directive going foward rather then remote and has made some change based on that assumption, which is resulting in recurring errors when attempting to run terraform plan or apply. During the initial fetch-state action it locks the state and then returns an error saying it could not release the lock. It doesn't do this 100% of the time but more often than not. Reverting to 1.9 resolved the problem. The `cloud` backend does not support prefix naming and this results in additional overhead when attempting to maintain DRY tf pipeline patterns since the backend resources does not support tf variables._
+
+_Recent tag terraform versions_
+| tag       | terraform version |
+|-----------|:-----------------:|
+| 2026.01   | v1.9.8            |
+| 2026.01.1 | v1.10.5           |
+| 2026.01.2 | v1.11.4           |
+| 2026.01.3 | v1.12.2           |
+| 2026.01.4 | v1.13.5           |
+| 2026.01.5 | v1.14.3           |
