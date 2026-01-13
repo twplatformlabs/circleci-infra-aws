@@ -13,7 +13,7 @@ LABEL org.opencontainers.image.created="%%CREATED%%" \
       org.opencontainers.image.base.name="%%BASE%%"
 
 # terraform is pinned pending a resolution of the state file lock issues created by 1.10
-ENV TERRAFORM_VERSION=1.12.2
+ENV TERRAFORM_VERSION=1.10.5
 # ENV TERRAFORM_SHA256SUM=186e0145f5e5f2eb97cbd785bc78f21bae4ef15119349f6ad4fa535b83b10df8
 
 # awscli has to be pinned because the checkov package does not support more recent versions
@@ -54,7 +54,7 @@ RUN sudo apk add --no-cache \
              bats && \
     sudo sh -c "echo 'gem: --no-document' > /etc/gemrc" && \
     sudo gem install \
-             awspec \
+             awspec:1.30.0 \
              nokogiri \
              json && \
     curl -SLO "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && \
@@ -81,6 +81,3 @@ RUN sudo apk add --no-cache \
 USER circleci
 
 WORKDIR /home/circleci/project
-
-#     echo "${TERRAFORM_SHA256SUM}  terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > "terraform_${TERRAFORM_VERSION}_SHA256SUMS" && \
-#     sha256sum -cs "terraform_${TERRAFORM_VERSION}_SHA256SUMS" && sudo rm "terraform_${TERRAFORM_VERSION}_SHA256SUMS" && \

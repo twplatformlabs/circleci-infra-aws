@@ -13,7 +13,7 @@ LABEL org.opencontainers.image.created="%%CREATED%%" \
       org.opencontainers.image.base.name="%%BASE%%"
 
 # terraform is pinned pending a resolution of the state file lock issues created by 1.10
-ENV TERRAFORM_VERSION=1.12.2
+ENV TERRAFORM_VERSION=1.10.5
 # ENV TERRAFORM_SHA256SUM=186e0145f5e5f2eb97cbd785bc78f21bae4ef15119349f6ad4fa535b83b10df8
 
 # awscli has to be pinned because the checkov package does not support more recent versions
@@ -43,7 +43,7 @@ RUN sudo apt-get update && sudo apt-get install --no-install-recommends -y \
              awscli=="${AWSCLI_VERSION}" \
              checkov && \
     sudo gem install --no-document \
-             awspec \
+             awspec:1.30.0 \
              nokogiri \
              json && \
     sudo npm install -g \
