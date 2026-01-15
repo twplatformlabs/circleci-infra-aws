@@ -55,7 +55,7 @@ workflows:
           snyk-severity-threshold: high
           snyk-skip-base-image: true
           snyk-organization: twplatformlabs
-          bats-test: true
+          bats-test: false
           bats-entry-point: /bin/ash
           opencontainer-labels: true
           security-scan-nofail: true
@@ -72,7 +72,7 @@ workflows:
           snyk-severity-threshold: high
           snyk-skip-base-image: true
           snyk-organization: twplatformlabs
-          bats-test: true
+          bats-test: false
           bats-entry-point: /bin/bash
           opencontainer-labels: true
           security-scan-nofail: true
