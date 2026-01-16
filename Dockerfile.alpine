@@ -12,6 +12,8 @@ LABEL org.opencontainers.image.created="%%CREATED%%" \
       org.opencontainers.image.description="Alpine-based CircleCI executor image for terraform pipelines" \
       org.opencontainers.image.base.name="%%BASE%%"
 
+
+ENV RUBYOPT='-raws-sdk-elastictranscoder'
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 
 # Configured for automatic, monthly build using current package repository release versions.
@@ -25,8 +27,9 @@ RUN sudo bash -c "echo 'http://dl-cdn.alpinelinux.org/alpine/v3.19/main' >> /etc
              ruby-bundler && \
     sudo sh -c "echo 'gem: --no-document' > /etc/gemrc" && \
     sudo gem install \
-             aws-sdk:3.3.0 \
-             awspec:1.29.0 \
+             aws-sdk \
+             aws-sdk-elastictranscoder \
+             awspec \
              nokogiri \
              json
 
