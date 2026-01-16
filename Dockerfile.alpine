@@ -19,10 +19,9 @@ SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 # Configured for automatic, monthly build using current package repository release versions.
 # Pin downstream executor builds to specific OS and package versions using YYYY.MM tag.
 # hadolint ignore=DL3004,SC2046
-RUN sudo bash -c "echo 'http://dl-cdn.alpinelinux.org/alpine/v3.19/main' >> /etc/apk/repositories" && sudo apk update && \
-    sudo apk add --no-cache \
-             ruby==3.2.8-r0 \
-             ruby-dev==3.2.8-r0 \
+RUN sudo apk add --no-cache \
+             ruby \
+             ruby-dev \
              ruby-webrick \
              ruby-bundler && \
     sudo sh -c "echo 'gem: --no-document' > /etc/gemrc" && \
