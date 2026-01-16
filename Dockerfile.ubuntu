@@ -18,6 +18,7 @@ ENV TERRAFORM_VERSION=1.10.5
 
 # awscli has to be pinned because the checkov package does not support more recent versions
 ENV AWSCLI_VERSION=1.36.17
+ENV RUBYOPT='-raws-sdk-elastictranscoder'
 
 SHELL ["/bin/bash", "-exo", "pipefail", "-c"]
 
@@ -43,7 +44,9 @@ RUN sudo apt-get update && sudo apt-get install --no-install-recommends -y \
              awscli=="${AWSCLI_VERSION}" \
              checkov && \
     sudo gem install --no-document \
-             awspec:1.30.0 \
+             aws-sdk \
+             aws-sdk-elastictranscoder \
+             awspec \
              nokogiri \
              json && \
     sudo npm install -g \
