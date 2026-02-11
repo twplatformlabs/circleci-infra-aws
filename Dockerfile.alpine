@@ -1,20 +1,6 @@
-FROM twdps/circleci-base-image:alpine-stable
+FROM ghcr.io/twplatformlabs/circleci-base-image:alpine-latest
 
-LABEL org.opencontainers.image.created="%%CREATED%%" \
-      org.opencontainers.image.authors="nic.cheneweth@thoughtworks.com" \
-      org.opencontainers.image.documentation="https://github.com/twplatformlabs/circleci-infra-aws" \
-      org.opencontainers.image.source="https://github.com/twplatformlabs/circleci-infra-aws" \
-      org.opencontainers.image.url="https://github.com/twplatformlabs/circleci-infra-aws" \
-      org.opencontainers.image.version="%%VERSION%%" \
-      org.opencontainers.image.vendor="ThoughtWorks, Inc." \
-      org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.title="circleci-infra-aws" \
-      org.opencontainers.image.description="Alpine-based CircleCI executor image for terraform pipelines" \
-      org.opencontainers.image.base.name="%%BASE%%"
-
-# terraform is pinned pending a resolution of the state file lock issues created by 1.10
-ENV TERRAFORM_VERSION=1.12.2
-# ENV TERRAFORM_SHA256SUM=186e0145f5e5f2eb97cbd785bc78f21bae4ef15119349f6ad4fa535b83b10df8
+ENV TERRAFORM_VERSION=1.13.5
 
 # awscli has to be pinned because the checkov package does not support more recent versions
 ENV AWSCLI_VERSION=1.36.17
@@ -63,9 +49,6 @@ RUN sudo apk add --no-cache \
     curl -SLO "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && \
     sudo unzip "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && sudo mv terraform /usr/local/bin/terraform && \
     sudo rm "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && rm LICENSE.txt && \
-    curl -L $(curl -s https://api.github.com/repos/tenable/terrascan/releases/latest | grep -o -E "https://.+?_Darwin_x86_64.tar.gz") > terrascan.tar.gz && \
-    tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz && \
-    sudo install terrascan /usr/local/bin && rm terrascan && \
     sudo bash -c "curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash" && \
     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && \
     sudo bash -c "curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && \
@@ -84,3 +67,9 @@ RUN sudo apk add --no-cache \
 USER circleci
 
 WORKDIR /home/circleci/project
+
+
+#     curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh && \
+#     chmod +x install-opentofu.sh && \
+#     sudo bash -c "./install-opentofu.sh --install-method apk" && \
+#     rm -f install-opentofu.sh && \

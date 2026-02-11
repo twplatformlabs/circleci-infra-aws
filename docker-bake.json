@@ -1,0 +1,65 @@
+{
+  "variable": {
+    "CREATED": { "default": "" },
+    "REVISION": { "default": "" },
+    "ALPINE_BASE": { "default": "" },
+    "UBUNTU_BASE": { "default": "" },
+    "TAG": { "default": "" }
+  },
+
+  "group": {
+    "executors": {
+      "targets": ["alpine", "ubuntu"]
+    }
+  },
+  "target": {
+    "_release": {
+      "labels": {
+        "org.opencontainers.image.created": "${CREATED}",
+        "org.opencontainers.image.authors": "nic.cheneweth@thoughtworks.com",
+        "org.opencontainers.image.revision": "${REVISION}",
+        "org.opencontainers.image.vendor": "ThoughtWorks, Inc.",
+        "org.opencontainers.image.licenses": "MIT"
+      },
+      "args": {
+        "BUILDKIT_CONTEXT_KEEP_GIT_DIR": "1",
+        "BUILDX_EXPERIMENTAL": "1",
+        "BUILDKIT_SBOM_SCAN_CONTEXT": "1"
+      },
+      "attest": [
+        "type=provenance,mode=max,version=v1",
+        "type=sbom"
+      ]
+    },
+    "alpine": {
+      "dockerfile": "Dockerfile.alpine",
+      "tags": ["ghcr.io/twplatformlabs/circleci-infra-aws:alpine-${TAG}"],
+      "context": ".",
+      "platforms": ["linux/amd64"],
+      "inherits": ["_release"],
+      "labels": {
+        "org.opencontainers.image.url": "https://github.com/twplatformlabs/circleci-infra-aws",
+        "org.opencontainers.image.documentation": "https://github.com/twplatformlabs/circleci-infra-aws",
+        "org.opencontainers.image.source": "https://github.com/twplatformlabs/circleci-infra-aws",
+        "org.opencontainers.image.title": "circleci-infra-aws",
+        "org.opencontainers.image.description": "Alpine-based CircleCI executor image for AWS infrastructure pipelines",
+        "org.opencontainers.image.base.name": "${ALPINE_BASE}"
+      }
+    },
+    "ubuntu": {
+      "dockerfile": "Dockerfile.ubuntu",
+      "tags": ["ghcr.io/twplatformlabs/circleci-infra-aws:ubuntu-${TAG}"],
+      "context": ".",
+      "platforms": ["linux/amd64"],
+      "inherits": ["_release"],
+      "labels": {
+        "org.opencontainers.image.url": "https://github.com/twplatformlabs/circleci-infra-aws",
+        "org.opencontainers.image.documentation": "https://github.com/twplatformlabs/circleci-infra-aws",
+        "org.opencontainers.image.source": "https://github.com/twplatformlabs/circleci-infra-aws",
+        "org.opencontainers.image.title": "circleci-infra-aws",
+        "org.opencontainers.image.description": "Ubuntu-based CircleCI executor image for AWS infrastructure pipelines",
+        "org.opencontainers.image.base.name": "${UBUNTU_BASE}"
+      }
+    }
+  }
+}
