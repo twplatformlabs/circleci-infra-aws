@@ -64,84 +64,36 @@ workflows:
 
   build and publish:
     jobs:
-      - executor-tools/dev-release:
-          name: alpine image build
+      - executor-tools/dev-buildx:
+          name: development build
           context: *context
           shell: *shell
-          image: *image
-          dockerfile: Dockerfile.alpine
-          tag: alpine-edge
-          snyk-scan: true
-          snyk-severity-threshold: high
-          snyk-skip-base-image: true
-          snyk-organization: twplatformlabs
-          bats-test: true
-          bats-entry-point: /bin/ash
-          opencontainer-labels: true
-          security-scan-nofail: true
-          filters: *on-each-run
-
-      - executor-tools/dev-release:
-          name: ubuntu image build
-          context: *context
-          shell: *shell
-          image: *image
-          dockerfile: Dockerfile.ubuntu
-          tag: ubuntu-edge
-          snyk-scan: true
-          snyk-severity-threshold: high
-          snyk-skip-base-image: true
-          snyk-organization: twplatformlabs
+          executor-image-name: *executor-name
+          registry: *registry
+          registry-login: GHCR_LOGIN
+          registry-password: GHCR_PASSWORD
+          scout-scan: true
           bats-test: true
           bats-entry-point: /bin/bash
-          opencontainer-labels: true
-          security-scan-nofail: true
+          bats-test-path: test/circleci_infra_aws.bats
           filters: *on-each-run
 
-      - executor-tools/publish:
-          name: alpine release
+      - executor-tools/releasex:
+          name: Publish release version
           context: *context
           shell: *shell
-          image: *image
-          pull-tag: alpine-edge
-          tag-annotation: alpine-
-          release-tag: alpine-stable
-          sign-image: true
-          sbom: true
-          after-checkout:
-            - set-signing-keys
-          requires:
-            - alpine image build
-            - ubuntu image build
-          filters: *on-tag-main
-
-      - executor-tools/publish:
-          name: ubuntu release
-          context: *context
-          shell: *shell
-          image: *image
-          pull-tag: ubuntu-edge
-          tag-annotation: ubuntu-
-          release-tag: ubuntu-stable
+          executor-image-name: *executor-name
+          registry: *registry
+          registry-login: GHCR_LOGIN
+          registry-password: GHCR_PASSWORD
+          include-latest: "true"
           sign-image: true
           after-checkout:
             - set-signing-keys
+          after-publish:
+            - release-notes
           requires:
-            - alpine image build
-            - ubuntu image build
-          filters: *on-tag-main
-
-      - do/gh-release:
-          name: generate release notes
-          shell: *shell
-          context: *context
-          notes-from-file: release.md
-          include-commit-msg: true
-          upload-artifacts: true
-          artifact-folder: workspace
-          requires:
-            - alpine release
-            - ubuntu release
+            - development build
           filters: *on-tag-main
 
   monthly build:
