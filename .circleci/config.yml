@@ -2,14 +2,15 @@
 version: 2.1
 
 orbs:
-  executor-tools: twdps/executor-tools@5.0.0
+  executor-tools: twdps/executor-tools@6.0.1
   op: twdps/onepassword@3.0.0
-  do: twdps/pipeline-events@5.2.0
+  do: twdps/pipeline-events@5.3.2
 
 globals:
-  - &image twdps/circleci-infra-aws
   - &context platform
   - &shell op run --env-file op.env -- /bin/bash -eo pipefail
+  - &registry ghcr.io
+  - &executor-name ghcr.io/twplatformlabs/circleci-executor-builder:alpine-latest
 
 on-push-main: &on-push-main
   branches:
@@ -39,6 +40,25 @@ commands:
       - op/write-to-file:
           op-value: platform/svc-cosign-public-key/notesPlain
           out-file: cosign.pub
+
+  release-notes:
+    steps:
+      - do/gh-buildx-image-release-notes:
+          notes-from-file: release.md
+          include-commit-msg: true
+          include-sbom-guidance: true
+          guidance-path: test/package_versions.sh
+          verify-tag: true
+      - run:
+          name: include build logs in release assets
+          command: |
+            mv workspace/docker-bake.json.executors.build.out build.log && gh release upload $CIRCLE_TAG build.log
+            mv workspace/scout.out cve-scan.log && gh release upload $CIRCLE_TAG cve-scan.log
+      - do/slack-bot:
+          channel: lab-events
+          message: "new release circleci-infra-aws"
+          include-link: true
+          include-tag: true
 
 workflows:
 
