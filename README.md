@@ -35,7 +35,7 @@ This image has the following tagging scheme:
 
 ```
 ghcr.io/twplatformlabs/circleci-infra-aws:[alpine | ubuntu]-<YYYY.MM>
-ghcr.io/twplatformlabs/circleci-infra-aws::[alpine | ubuntu]-latest
+ghcr.io/twplatformlabs/circleci-infra-aws:[alpine | ubuntu]-latest
 ghcr.io/twplatformlabs/circleci-infra-aws:[alpine | ubuntu]-dev.SHA:0:7
 ```
 
@@ -55,4 +55,5 @@ _Recent tag terraform versions_
 | 2026.01.2 | v1.11.4           |
 | 2026.01.3 | v1.12.2           |
 | 2026.01.4 | v1.13.5           |
-| 2026.01.5 | v1.14.3           |
+| 2026.02   | v1.14.*           |
+*From here, the recurring builds will pull and pin the current release version. Detailed version information will be included in the bill of materials and the release note guidance.  

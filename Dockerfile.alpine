@@ -1,7 +1,5 @@
 FROM ghcr.io/twplatformlabs/circleci-base-image:alpine-latest
 
-ENV TERRAFORM_VERSION=1.13.5
-
 # awscli has to be pinned because the checkov package does not support more recent versions
 ENV AWSCLI_VERSION=1.36.17
 ENV RUBYOPT='-raws-sdk-elastictranscoder'
@@ -46,9 +44,14 @@ RUN sudo apk add --no-cache \
              awspec \
              nokogiri \
              json && \
-    curl -SLO "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && \
-    sudo unzip "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && sudo mv terraform /usr/local/bin/terraform && \
-    sudo rm "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && rm LICENSE.txt && \
+    download_version=$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r '.current_version') && \
+    curl -SLO "https://releases.hashicorp.com/terraform/${download_version}/terraform_${download_version}_linux_amd64.zip" > "terraform_${download_version}_linux_amd64.zip" && \
+    sudo unzip "terraform_${download_version}_linux_amd64.zip" && sudo mv terraform /usr/local/bin/terraform && \
+    sudo rm "terraform_${download_version}_linux_amd64.zip" && rm LICENSE.txt && \
+    curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh && \
+    chmod +x install-opentofu.sh && \
+    sudo bash -c "./install-opentofu.sh --install-method apk" && \
+    rm -f install-opentofu.sh && \
     sudo bash -c "curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash" && \
     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && \
     sudo bash -c "curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && \
@@ -67,9 +70,3 @@ RUN sudo apk add --no-cache \
 USER circleci
 
 WORKDIR /home/circleci/project
-
-
-#     curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh && \
-#     chmod +x install-opentofu.sh && \
-#     sudo bash -c "./install-opentofu.sh --install-method apk" && \
-#     rm -f install-opentofu.sh && \
