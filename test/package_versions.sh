@@ -20,7 +20,7 @@ RESULT=$(bash -c "docker exec ${TEST_CONTAINER} checkov --version")
 echo "checkov ${RESULT}"
 RESULT=$(bash -c "docker exec ${TEST_CONTAINER} awspec --version")
 echo "awspec ${RESULT}"
-bash -c "docker exec ${TEST_CONTAINER} tflint --version"
+bash -c "docker exec ${TEST_CONTAINER} tflint --version | head -n 1"
 bash -c "docker exec ${TEST_CONTAINER} bats --version"
 RESULT=$(bash -c "docker exec ${TEST_CONTAINER} snyk version")
 echo "snyk ${RESULT}"
