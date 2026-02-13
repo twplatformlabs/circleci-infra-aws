@@ -9,7 +9,8 @@ SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 # Configured for automatic, monthly build using current package repository release versions.
 # Pin downstream executor builds to specific OS and package versions using YYYY.MM tag.
 # hadolint ignore=DL3004,SC2046
-RUN sudo apk add --no-cache \
+RUN sudo bash -c "echo '@community https://dl-cdn.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories" && \
+    sudo apk add --no-cache \
              nodejs-current \
              npm \
              ruby \
@@ -21,7 +22,8 @@ RUN sudo apk add --no-cache \
              python3-dev \
              py3-pip \
              perl-utils \
-             libffi-dev && \
+             libffi-dev \
+             opentofu@community && \
     sudo rm /usr/lib/python*/EXTERNALLY-MANAGED && \
     if [ ! -e /usr/bin/pip ]; then sudo ln -s /usr/bin/pip3 /usr/bin/pip ; fi && \
     sudo ln -s /usr/bin/pydoc3 /usr/bin/pydoc && \
@@ -48,10 +50,7 @@ RUN sudo apk add --no-cache \
     curl -SLO "https://releases.hashicorp.com/terraform/${download_version}/terraform_${download_version}_linux_amd64.zip" > "terraform_${download_version}_linux_amd64.zip" && \
     sudo unzip "terraform_${download_version}_linux_amd64.zip" && sudo mv terraform /usr/local/bin/terraform && \
     sudo rm "terraform_${download_version}_linux_amd64.zip" && rm LICENSE.txt && \
-    curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh && \
-    chmod +x install-opentofu.sh && \
-    sudo bash -c "./install-opentofu.sh --install-method apk" && \
-    rm -f install-opentofu.sh && \
+
     sudo bash -c "curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash" && \
     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && \
     sudo bash -c "curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && \
@@ -70,3 +69,8 @@ RUN sudo apk add --no-cache \
 USER circleci
 
 WORKDIR /home/circleci/project
+
+#     curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh && \
+#     chmod +x install-opentofu.sh && \
+#     sudo bash -c "./install-opentofu.sh --install-method apk" && \
+#     rm -f install-opentofu.sh && \
