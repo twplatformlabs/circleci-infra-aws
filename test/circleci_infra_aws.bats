@@ -9,72 +9,77 @@ setup() {
   fi
 }
 
-@test "terraform version" {
+@test "terraform available" {
   run bash -c "docker exec ${TEST_CONTAINER} terraform --help"
   [[ "${output}" =~ "Usage: terraform" ]]
 }
 
-@test "tflint version" {
+@test "tflint available" {
   run bash -c "docker exec ${TEST_CONTAINER} tflint --help"
   [[ "${output}" =~ "tflint --chdir=DI" ]]
 }
 
-@test "python3 version" {
+@test "python3 available" {
   run bash -c "docker exec ${TEST_CONTAINER} python --help"
   [[ "${output}" =~ "Options" ]]
 }
 
-@test "awscli version" {
+@test "awscli available" {
   run bash -c "docker exec ${TEST_CONTAINER} aws"
   [[ "${output}" =~ "usage: aws" ]]
 }
 
-@test "bats version" {
+@test "bats available" {
   run bash -c "docker exec ${TEST_CONTAINER} bats --help"
   [[ "${output}" =~ "Usage: bats" ]]
 }
 
-@test "ruby version" {
+@test "ruby available" {
   run bash -c "docker exec ${TEST_CONTAINER} ruby --help"
   [[ "${output}" =~ "Usage: ruby" ]]
 }
 
-@test "awspec version" {
+@test "awspec available" {
   run bash -c "docker exec ${TEST_CONTAINER} gem list | grep awspec"
   [[ "${output}" =~ "awspec" ]]
 }
 
-@test "trivy version" {
+@test "trivy available" {
   run bash -c "docker exec ${TEST_CONTAINER} trivy --help"
   [[ "${output}" =~ "trivy [command]" ]]
 }
 
-@test "checkov version" {
+@test "checkov available" {
   run bash -c "docker exec ${TEST_CONTAINER} checkov --help"
   [[ "${output}" =~ "usage: checkov" ]]
 }
 
-@test "snyk version" {
+@test "snyk available" {
   run bash -c "docker exec ${TEST_CONTAINER} snyk --help"
   [[ "${output}" =~ "Snyk CLI scans" ]]
 }
 
-@test "circlepipe version" {
+@test "circlepipe available" {
   run bash -c "docker exec ${TEST_CONTAINER} circlepipe --help"
   [[ "${output}" =~ "circlepipe [command]" ]]
 }
 
-@test "cosign version" {
+@test "cosign available" {
   run bash -c "docker exec ${TEST_CONTAINER} cosign --help"
   [[ "${output}" =~ "cosign [command]" ]]
 }
 
-@test "kubectl version" {
+@test "kubectl available" {
   run bash -c "docker exec ${TEST_CONTAINER} kubectl --help"
   [[ "${output}" =~ "kubectl controls" ]]
 }
 
-@test "helm version" {
+@test "helm available" {
   run bash -c "docker exec ${TEST_CONTAINER} helm --help"
   [[ "${output}" =~ "helm [command]" ]]
+}
+
+@test "tofu available" {
+  run bash -c "docker exec ${TEST_CONTAINER} tofu --help"
+  [[ "${output}" =~ "Main commands:" ]]
 }

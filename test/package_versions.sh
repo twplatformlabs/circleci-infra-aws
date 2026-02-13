@@ -6,6 +6,7 @@ if [[ -z "${TEST_CONTAINER}" ]]; then
 fi
 
 bash -c "docker exec ${TEST_CONTAINER} terraform version | head -n 1"
+bash -c "docker exec ${TEST_CONTAINER} tofu version | head -n 1"
 bash -c "docker exec ${TEST_CONTAINER} aws --version"
 bash -c "docker exec ${TEST_CONTAINER} kubectl version | head -n 1"
 RESULT=$(bash -c "docker exec ${TEST_CONTAINER} helm version --short")
