@@ -29,6 +29,7 @@ RUN sudo apt-get update && sudo apt-get install --no-install-recommends -y \
              awscli=="${AWSCLI_VERSION}" \
              checkov && \
     sudo gem install --no-document \
+             base64:0.1.0 \
              aws-sdk \
              aws-sdk-elastictranscoder \
              awspec \

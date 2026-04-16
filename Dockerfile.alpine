@@ -41,6 +41,7 @@ RUN sudo bash -c "echo '@community https://dl-cdn.alpinelinux.org/alpine/edge/co
              bats && \
     sudo sh -c "echo 'gem: --no-document' > /etc/gemrc" && \
     sudo gem install \
+             base64:0.1.0 \
              aws-sdk \
              aws-sdk-elastictranscoder \
              awspec \
