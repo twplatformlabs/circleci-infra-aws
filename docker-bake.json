@@ -6,7 +6,6 @@
     "UBUNTU_BASE": { "default": "" },
     "TAG": { "default": "" }
   },
-
   "group": {
     "executors": {
       "targets": ["alpine", "ubuntu"]
