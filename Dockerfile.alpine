@@ -67,6 +67,7 @@ RUN sudo bash -c "echo '@community https://dl-cdn.alpinelinux.org/alpine/edge/co
     curl -LO "${download_url}" && \
     chmod +x cosign-linux-amd64 && sudo mv cosign-linux-amd64 /usr/local/bin/cosign
 
+# hadolint DL3066
 USER circleci
 
 WORKDIR /home/circleci/project
