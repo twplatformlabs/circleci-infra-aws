@@ -66,7 +66,7 @@ RUN sudo apt-get update && sudo apt-get install --no-install-recommends -y \
     sudo apt-get clean && \
     sudo rm -rf /var/lib/apt/lists/*
 
-# hadolint DL3066
+# hadolint ignore=DL3066
 USER circleci
 
 WORKDIR /home/circleci/project
