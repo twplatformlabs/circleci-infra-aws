@@ -50,7 +50,9 @@ RUN sudo apt-get update && sudo apt-get install --no-install-recommends -y \
     echo "deb [signed-by=/etc/apt/keyrings/opentofu.gpg,/etc/apt/keyrings/opentofu-repo.gpg] https://packages.opentofu.org/opentofu/tofu/any/ any main deb-src [signed-by=/etc/apt/keyrings/opentofu.gpg,/etc/apt/keyrings/opentofu-repo.gpg] https://packages.opentofu.org/opentofu/tofu/any/ any main" | sudo tee /etc/apt/sources.list.d/opentofu.list > /dev/null && \
     sudo chmod a+r /etc/apt/sources.list.d/opentofu.list && \
     sudo apt-get update && sudo apt-get install -y tofu && \
-    sudo bash -c "curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash" && \
+    sudo bash -c "curl -sSLO https://github.com/terraform-linters/tflint/releases/latest/download/tflint_linux_amd64.zip" && \
+    unzip tflint_linux_amd64.zip && \
+    sudo install -c -v tflint /usr/local/bin/ && \
     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && \
     sudo bash -c "curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && \
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && \

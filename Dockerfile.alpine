@@ -52,7 +52,9 @@ RUN sudo bash -c "echo '@community https://dl-cdn.alpinelinux.org/alpine/edge/co
     curl -SLO "https://releases.hashicorp.com/terraform/${download_version}/terraform_${download_version}_linux_amd64.zip" > "terraform_${download_version}_linux_amd64.zip" && \
     sudo unzip "terraform_${download_version}_linux_amd64.zip" && sudo mv terraform /usr/local/bin/terraform && \
     sudo rm "terraform_${download_version}_linux_amd64.zip" && rm LICENSE.txt && \
-    sudo bash -c "curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash" && \
+    sudo bash -c "curl -sSLO https://github.com/terraform-linters/tflint/releases/latest/download/tflint_linux_amd64.zip" && \
+    unzip tflint_linux_amd64.zip && \
+    sudo install -c -v tflint /usr/local/bin/ && \
     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && \
     sudo bash -c "curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && \
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && rm kubectl && \
