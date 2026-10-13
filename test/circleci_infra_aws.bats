@@ -83,3 +83,8 @@ setup() {
   run bash -c "docker exec ${TEST_CONTAINER} tofu --help"
   [[ "${output}" =~ "Main commands:" ]]
 }
+
+@test "project directory empty" {
+  run bash -c "docker exec ${TEST_CONTAINER} ls -A /home/circleci/project"
+  [[ -z "${output}" ]]
+}
